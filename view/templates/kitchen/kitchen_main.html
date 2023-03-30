@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div data-bell="{{ bell }}" id="kitchen-main" class="kitchen-main" hx-get="{% url 'kitchen' %}"
+         hx-trigger="every 5s" hx-target="#kitchen-main" hx-swap-oob="true">
+        <div class="baskets">
+            {% for b in nc %}
+                <a class="kitchen-basket" href="{% url 'kitchen_cooked' b.id %}">
+                    <div class="top">
+                        <div class="t-nr">{{ b.session.table }}</div>
+                        <div class="time">{{ b.finished_time|date:"H:i" }}</div>
+                    </div>
+                    <div class="orders">
+                        {% for o in b.orders.all %}
+                            <div class="kitchen-order">
+                                <div class="up">
+                                    {{ o.product.name_tr }}
+                                </div>
+                                {% if o.notes %}
+                                    <p class="order-notes">{{ o.notes }}</p>
+                                {% endif %}
+                                <div class="order-extras">
+                                    {% for e in o.chosen_extras.all %}
+                                        <div class="order-extra">- {{ e.name_tr }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% if not forloop.last %}
+                            <div class="kitchen-line"></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+        <script>
+            kitchen_main = document.querySelector('#kitchen-main')
+            data = kitchen_main.dataset
+            audio = new Audio('../../static/sounds/bell.wav')
+            if (data.bell === 'True') {
+                audio.play()
+                setTimeout(() => {
+                    audio.pause()
+                }, 5000)
+            }
+        </script>
+    </div>
+{% endblock %}

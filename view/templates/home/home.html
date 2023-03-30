@@ -1,0 +1,68 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="home">
+        <img class="logo" src="{% static 'img/home/mekan_logo.png' %}" alt="logo">
+        <div class="table-nr"><p>{{ table_nr }}</p></div>
+        <div class="languages">
+            <a href="{% url 'home' language='tr' table_hash=table_hash %}"
+               class="language {% if language == 'tr' %} active {% endif %}"><p>Türkçe</p></a>
+            <a href="{% url 'home' language='de' table_hash=table_hash %}"
+               class="language {% if language == 'de' %} active {% endif %}"><p>Deutsch</p></a>
+            <a href="{% url 'home' language='en' table_hash=table_hash %}"
+               class="language {% if language == 'en' %} active {% endif %}"><p>English</p></a>
+        </div>
+        <a href="{% url 'menu' table_hash=table_hash language=language %}" class="order-button">
+            <p>
+                {% if language == 'de' %}
+                    Bestellen / Menü
+                {% endif %}
+                {% if language == 'tr' %}
+                    Sipariş ver / Menüye git
+                {% endif %}
+                {% if language == 'en' %}
+                    Order / Menu
+                {% endif %}
+            </p>
+        </a>
+        <div class="action-buttons">
+            {% csrf_token %}
+            {% if can_call_waiter %}
+                <a hx-post="{% url 'call_waiter' table_hash=table_hash language=language %}" hx-swap="outerHTML"
+                   class="call-waiter action-button">
+                    <img src="{% static 'img/home/bell.svg' %}" alt="bell">
+                    <p>
+                        {% if language == 'de' %}
+                            Kellner rufen
+                        {% endif %}
+                        {% if language == 'tr' %}
+                            Garson çağır
+                        {% endif %}
+                        {% if language == 'en' %}
+                            Call Waiter
+                        {% endif %}
+                    </p>
+                </a>
+            {% else %}
+                {% include 'htmx_partials/called_waiter.html' %}
+            {% endif %}
+            {% if has_order %}
+                <a href="{% url 'my_orders' language=language table_hash=table_hash %}" class="my-orders action-button">
+                    {% if language == 'de' %}
+                        Meine Bestellungen
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Siparişlerim
+                    {% endif %}
+                    {% if language == 'en' %}
+                        My Orders
+                    {% endif %}
+                </a>
+            {% endif %}
+        </div>
+        <div class="reble">
+            <p class="made">Made by</p>
+            <p class="gilroy">reble studio</p>
+        </div>
+    </div>
+{% endblock %}

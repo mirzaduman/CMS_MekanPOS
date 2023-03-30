@@ -1,0 +1,35 @@
+{% load static %}
+<div class="delete-order-prompt" id="delete-order-prompt-{{ order.id }}">
+    <div class="content">
+        <a onclick="closeModal(this)" class="prompt-close"><img src="{% static 'img/menu/close.svg' %}" alt="close"></a>
+        <p class="prompt-text">
+            {% if language == 'de' %}
+                Möchten Sie das Produkt wirklich löschen?
+            {% elif language == 'tr' %}
+                Ürüni silmek istediğinize emin misininz?
+            {% elif language == 'en' %}
+                Do you really want to delete this product?
+            {% endif %}
+        </p>
+        <div class="prompt-actions">
+            <a onclick="closeModal(this)" class="prompt-no">
+                {% if language == 'de' %}
+                    Nein
+                {% elif language == 'tr' %}
+                    Hayır
+                {% elif language == 'en' %}
+                    No
+                {% endif %}
+            </a>
+            <a href="{% url 'delete_order' language=language table_hash=table_hash order_id=order.id %}" class="prompt-yes">
+                {% if language == 'de' %}
+                    Ja
+                {% elif language == 'tr' %}
+                    Evet
+                {% elif language == 'en' %}
+                    Yes
+                {% endif %}
+            </a>
+        </div>
+    </div>
+</div>

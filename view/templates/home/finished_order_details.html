@@ -1,0 +1,167 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="finished-order-details">
+        <div class="top-bar">
+            <a href="{% url 'my_orders' language=language table_hash=table_hash %}" class="left-arrow">
+                <img src="{% static 'img/menu/left-arrow.svg' %}" alt="back">
+            </a>
+            <p class="menu-topic">
+                {% if language == 'de' %}
+                    Bestelldetails
+                {% endif %}
+                {% if language == 'tr' %}
+                    Sipariş detayları
+                {% endif %}
+                {% if language == 'en' %}
+                    Order details
+                {% endif %}
+            </p>
+        </div>
+        <div class="details">
+            <p class="title">
+                {% if language == 'de' %}
+                    Produkt
+                {% endif %}
+                {% if language == 'tr' %}
+                    Ürün
+                {% endif %}
+                {% if language == 'en' %}
+                    Product
+                {% endif %}
+            </p>
+            <p class="detail">
+                {% if language == 'de' %}
+                    {{ order.product.name_de }}
+                {% endif %}
+                {% if language == 'tr' %}
+                    {{ order.product.name_tr }}
+                {% endif %}
+                {% if language == 'en' %}
+                    {{ order.product.name_en }}
+                {% endif %}
+            </p>
+            {% if order.product.allergens.all.exists %}
+                <div class="title">
+                    {% if language == 'de' %}
+                        Allergene
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Alerjenler
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Allergens
+                    {% endif %}
+                </div>
+                <p class="detail">
+                    {% for allergen in order.product.allergens.all %}
+                        {% if language == 'de' %}
+                            {{ allergen.code }} - {{ allergen.name_de }}
+                        {% endif %}
+                        {% if language == 'tr' %}
+                            {{ allergen.code }} - {{ allergen.name_tr }}
+                        {% endif %}
+                        {% if language == 'en' %}
+                            {{ allergen.code }} - {{ allergen.name_en }}
+                        {% endif %}
+                        {% if forloop.last %}
+
+                        {% else %}
+                            ,
+                        {% endif %}
+                    {% endfor %}
+                </p>
+            {% endif %}
+            {% if order.notes %}
+                <p class="title">
+                    {% if language == 'de' %}
+                        Zusätzliche Information
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Ek bilgi
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Additional Information
+                    {% endif %}
+                </p>
+                <p class="detail">{{ order.notes }}</p>
+            {% endif %}
+            {% if order.chosen_extras.all.exists %}
+                <p class="title">
+                    {% if language == 'de' %}
+                        Extras
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Ekstralar
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Extras
+                    {% endif %}
+                </p>
+                {% for extra in order.chosen_extras.all %}
+                    <div class="order-detail-extra">
+                        <p class="extra-name">
+                            {% if language == 'de' %}
+                                {{ extra.name_de }}
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                {{ extra.name_tr }}
+                            {% endif %}
+                            {% if language == 'en' %}
+                                {{ extra.name_en }}
+                            {% endif %}
+                        </p>
+                        <p class="extra-price">{{ extra.price }} €</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="line"></div>
+        <div class="totals">
+            <div class="total-line">
+                <p class="title">
+                    {% if language == 'de' %}
+                        Produkt
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Ürün
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Produkt
+                    {% endif %}
+                </p>
+                <p class="product-price">{{ order.product.price }} €</p>
+            </div>
+            {% if extras_price %}
+                <div class="total-line">
+                    <p class="title">
+                        {% if language == 'de' %}
+                            Extras
+                        {% endif %}
+                        {% if language == 'tr' %}
+                            Ekstralar
+                        {% endif %}
+                        {% if language == 'en' %}
+                            Extras
+                        {% endif %}
+                    </p>
+                    <p class="extras-price">{{ extras_price }} €</p>
+                </div>
+            {% endif %}
+            <div class="total-line">
+                <p class="title">
+                    {% if language == 'de' %}
+                            Summe
+                        {% endif %}
+                        {% if language == 'tr' %}
+                            Toplam
+                        {% endif %}
+                        {% if language == 'en' %}
+                            Sum
+                        {% endif %}
+                </p>
+                <p class="total">{{ order.price }} €</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

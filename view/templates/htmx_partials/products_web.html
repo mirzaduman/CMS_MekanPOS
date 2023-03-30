@@ -1,0 +1,149 @@
+{% load static %}
+<div class="products products-web" id="products">
+    {% if products %}
+        {% for product in products %}
+            {% for c in cat_list %}
+                {% if product.id == c.product_id %}
+                    <p class="menu_web_category">{{ c.cat_name }}</p>
+                {% endif %}
+            {% endfor %}
+            <div
+               class="product product-web {% if product.status.name != 'Aktiv' %}not-active{% endif %}">
+                {% for i in basket_products %}
+                    {% if i.id == product.id %}
+                        <span class="menu-amount">
+                            {{ i.amount }}
+                        </span>
+                    {% endif %}
+                {% endfor %}
+                {% if product.status.name == 'Aktiv' %}
+                    <div class="product-details">
+                        <p class="product-name">
+                            {% if product.product_nr %}
+                                <span class="product_nr">{{ product.product_nr }}.</span>
+                            {% endif %}
+                            {% if language == 'de' %}
+                                {{ product.name_de }}
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                {{ product.name_tr }}
+                            {% endif %}
+                            {% if language == 'en' %}
+                                {{ product.name_en }}
+                            {% endif %}
+                        </p>
+                        {% if product.content_disclaimer.all.exists %}
+                            <div class="content-disclaimers">
+                                {% for content_dislcaimer in product.content_disclaimer.all %}
+                                    {% if content_dislcaimer.name_de == 'Vegetarisch' %}
+                                        {% if language == 'de' %}
+                                            <p class="veggy">vegetarisch</p>
+                                        {% endif %}
+                                        {% if language == 'tr' %}
+                                            <p class="veggy">vejetaryen</p>
+                                        {% endif %}
+                                        {% if language == 'en' %}
+                                            <p class="veggy">vegetarian</p>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if content_dislcaimer.name_de == 'Vegan' %}
+                                        {% if language == 'de' %}
+                                            <p class="veggy">vegan</p>
+                                        {% endif %}
+                                        {% if language == 'tr' %}
+                                            <p class="veggy">vegan</p>
+                                        {% endif %}
+                                        {% if language == 'en' %}
+                                            <p class="veggy">vegan</p>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if content_dislcaimer.name_de == 'Scharf' %}
+                                        <img src="{% static 'img/menu/pepper.svg' %}" class="spicy" alt="spicy">
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p class="product-description">
+                            {% if language == 'de' %}
+                                {% if product.description_de %}
+                                    {{ product.description_de }}
+                                {% endif %}
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                {% if product.description_tr %}
+                                    {{ product.description_tr }}
+                                {% endif %}
+                            {% endif %}
+                            {% if language == 'en' %}
+                                {% if product.description_en %}
+                                    {{ product.description_en }}
+                                {% endif %}
+                            {% endif %}
+                        </p>
+                        <p class="product-price">
+                            {{ product.price }} €
+                        </p>
+                    </div>
+                {% endif %}
+                {% if product.status.name == 'Ausverkauft' %}
+                    <div class="not-active-product-details">
+                        <p class="product-name">
+                            {% if language == 'de' %}
+                                {{ product.name_de }}
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                {{ product.name_tr }}
+                            {% endif %}
+                            {% if language == 'en' %}
+                                {{ product.name_en }}
+                            {% endif %}
+                        </p>
+                        <p class="explanation">
+                            {% if language == 'de' %}
+                                Dieses Produkt ist derzeit nicht verfügbar.
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                Bu ürün şu anda stokta bulunmamaktadır.
+                            {% endif %}
+                            {% if language == 'en' %}
+                                This product is not available.
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endif %}
+                {% if product.status.name == 'Demnächst' %}
+                    <div class="not-active-product-details">
+                        <p class="product-name">
+                            {% if language == 'de' %}
+                                {{ product.name_de }}
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                {{ product.name_tr }}
+                            {% endif %}
+                            {% if language == 'en' %}
+                                {{ product.name_en }}
+                            {% endif %}
+                        </p>
+                        <p class="explanation">
+                            {% if language == 'de' %}
+                                Bald verfügbar!
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                Çok yakında!
+                            {% endif %}
+                            {% if language == 'en' %}
+                                Coming soon!
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endif %}
+                {% if product.picture %}
+                    <div class="product-image">
+                        <img src="{{ product.picture.url }}" alt="{{ product.name_de }}">
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+

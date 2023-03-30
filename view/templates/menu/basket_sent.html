@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="basket-sent">
+        <div class="basket-sent-top-bar">
+            <a href="{% url 'home' language=language table_hash=table_hash %}">
+                <img src="{% static 'img/menu/close.svg' %}" alt="close">
+            </a>
+        </div>
+        <div class="basket-sent-content">
+            <img src="{% static 'img/menu/basket-sent.svg' %}" alt="basket-sent">
+            <p>
+                {% if language == 'de' %}
+                    Bestellung aufgegeben
+                {% endif %}
+                {% if language == 'tr' %}
+                    Sipariş verildi
+                {% endif %}
+                {% if language == 'en' %}
+                    Order sent
+                {% endif %}
+            </p>
+            <a href="{% url 'home' language=language table_hash=table_hash %}">
+                {% if language == 'de' %}
+                    Zurück zur Startseite
+                {% endif %}
+                {% if language == 'tr' %}
+                    Anasayfaya git
+                {% endif %}
+                {% if language == 'en' %}
+                    Go to homepage
+                {% endif %}
+            </a>
+        </div>
+    </div>
+{% endblock %}

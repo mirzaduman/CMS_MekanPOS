@@ -1,0 +1,26 @@
+{% load static %}
+<div class="call-waiter action-button called-waiter">
+    <img src="{% static 'img/home/bell_disabled.svg' %}" alt="bell">
+    <p>
+        {% if language == 'de' %}
+            Kellner rufen
+        {% endif %}
+        {% if language == 'tr' %}
+            Garson çağır
+        {% endif %}
+        {% if language == 'en' %}
+            Call Waiter
+        {% endif %}
+    </p>
+</div>
+<p class="called-waiter-info">
+    {% if language == 'de' %}
+        Kellner kommt bald.
+    {% endif %}
+    {% if language == 'tr' %}
+        Garson birazdan gelecek.
+    {% endif %}
+    {% if language == 'en' %}
+        Waiter is coming soon.
+    {% endif %}
+</p>

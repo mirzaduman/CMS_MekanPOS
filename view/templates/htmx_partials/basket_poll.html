@@ -1,0 +1,122 @@
+<form method="post" id="basket-form" hx-get="{% url 'basket_poll' language=language table_hash=table_hash %}" hx-trigger="every 5s">
+    <div class="top-bar">
+        <div class="basket">
+            <a {% if was_in_product %} onclick="history.back()" {% else %}
+                                       href="{% url 'menu' language=language table_hash=table_hash %}" {% endif %}
+                                       class="left-arrow"><img
+                    src="{% static 'img/menu/left-arrow.svg' %}" alt="back"></a>
+            <p class="menu-topic">{{ menu_topic }}</p>
+            <a href="{% url 'basket' language=language table_hash=table_hash %}" class="basket-icon">
+                <img src="{% static 'img/menu/basket-icon.svg' %}" alt="">
+                {% if in_basket %}
+                    <div class="in-basket"></div>
+                {% endif %}
+            </a>
+        </div>
+        <div class="basket-table-nr">{{ table_nr }}</div>
+        <div class="basket-orders">
+            {% if in_basket %}
+                {% for order in orders %}
+                    <div class="basket-order" id="order_{{ order.id }}">
+                        {% include 'htmx_partials/delete_order_modal.html' %}
+                        <a class="left"
+                           href="{% url 'edit_order' language=language table_hash=table_hash order_id=order.id %}">
+                            <p class="basket-order-product-name">
+                                {{ order.name }}
+                            </p>
+                            {% if order.extras %}
+                                <p class="basket-order-extras">
+                                    {% for extra in order.extras %}
+                                        {% if language == 'de' %}
+                                            {{ extra.name_de }}
+                                        {% endif %}
+                                        {% if language == 'tr' %}
+                                            {{ extra.name_tr }}
+                                        {% endif %}
+                                        {% if language == 'en' %}
+                                            {{ extra.name_en }}
+                                        {% endif %}
+                                        {% if forloop.last %}
+
+                                        {% else %}
+                                            ,
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                        </a>
+                        <div class="right">
+                            <p class="order-price">{{ order.price }} €</p>
+                            <div class="basket-order-amount">
+                                <a {% if order.amount > 1 %}
+                                    hx-post="{% url 'decrease_order_amount' language=language table_hash=table_hash order_id=order.id %}"
+                                    hx-target="#order_{{ order.id }}" hx-swap="outerHTML"
+                                {% else %}
+                                    hx-post="{% url 'delete_order_prompt' order_id=order.id language=language table_hash=table_hash %}"
+                                    hx-target="#delete-order-prompt-{{ order.id }}" hx-swap="outerHTML"
+                                {% endif %} class="minus"><img
+                                        src="{% static 'img/menu/subtract.svg' %}" alt="minus"></a>
+                                <div class="amount">
+                                    <input type="hidden" id="basket-order-id" name="hidden-amount"
+                                           value="{{ order.id }}">
+                                    <input type="hidden" id="basket-order-amount" name="hidden-amount"
+                                           value="{{ order.amount }}">
+                                    <p class="shown-amount">{{ order.amount }}</p>
+                                </div>
+                                <a hx-post="{% url 'increase_order_amount' language=language table_hash=table_hash order_id=order.id %}"
+                                   hx-target="#order_{{ order.id }}" hx-swap="outerHTML" class="plus"><img
+                                        src="{% static 'img/menu/add.svg' %}" alt="plus"></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-basket">
+                    <img src="{% static 'img/menu/empty-basket.svg' %}" alt="empty-basket">
+                    <p class="empty-basket-text">
+                        {% if language == 'de' %}
+                            Warenkorb ist leer
+                        {% endif %}
+                        {% if language == 'tr' %}
+                            Sepetiniz boş
+                        {% endif %}
+                        {% if language == 'en' %}
+                            Basket is empty
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="basket-bottom-bar">
+            <div class="basket-sum">
+                <p class="price-title">
+                    {% if language == 'de' %}
+                        Summe
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Toplam
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Sum
+                    {% endif %}
+                </p>
+                <p class="end-price" id="end-price"><span class="price-value">{{ total }}</span> €</p>
+            </div>
+            <a {% if in_basket %}
+                href="{% url 'send_basket' language=language table_hash=table_hash basket_id=basket.id %}"
+            {% endif %}
+
+                class="product-order-submit {% if not in_basket %}no-basket{% endif %}">
+                {% if language == 'de' %}
+                    Bestellen
+                {% endif %}
+                {% if language == 'tr' %}
+                    Sipariş ver
+                {% endif %}
+                {% if language == 'en' %}
+                    Order
+                {% endif %}
+            </a>
+        </div>
+    </div>
+</form>

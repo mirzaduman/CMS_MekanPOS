@@ -1,0 +1,48 @@
+<div class="patron-data" id="patron-data">
+    <div class="data-block">
+        <p>Bol Peynirli</p>
+        <div class="stats">
+            <p>Adet: {{ bp.amount }} | Ciro: {{ bp.sales }} €</p>
+        </div>
+    </div>
+    <div class="data-block">
+        <p>Bol Etli</p>
+        <div class="stats">
+            <p>Adet: {{ be.amount }} | Ciro: {{ be.sales }} €</p>
+        </div>
+    </div>
+    <div class="data-block">
+        <p>Bol Tatlı</p>
+        <div class="stats">
+            <p>Adet: {{ bt.amount }} | Ciro: {{ bt.sales }} €</p>
+        </div>
+    </div>
+    <div class="data-block">
+        <p>Ara Toplam</p>
+        <div class="stats">
+            <p>Adet: {{ subtotal.amount }} | Ciro: {{ subtotal.sales }} €</p>
+        </div>
+    </div>
+    <div class="data-block">
+        <p>Ekstralar</p>
+        <div class="stats">
+            <p>{{ e.sales }} €</p>
+        </div>
+    </div>
+    <div class="data-block">
+        <p>Toplam</p>
+        <div class="stats">
+            <p>{{ total.sales }} €</p>
+        </div>
+    </div>
+    <div class="patron-line"></div>
+    <div class="tables">
+        {% for table in tables %}
+            <div class="table">
+                <p>Masa: <br> {{ table.nr }}</p>
+                <p>Toplam: <br> {{ table.total }} €</p>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>

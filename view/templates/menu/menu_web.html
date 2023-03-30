@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="menu-navbar web">
+        <div class="top-bar">
+            <a href="https://www.mekan-hamburg.de" class="left-arrow"><img
+                    src="{% static 'img/menu/left-arrow.svg' %}" alt="back"></a>
+            <div class="menu-web-languages">
+                <a class="menu-web-language {% if language == 'tr' %}active{% endif %}" href="{% url 'menu_web' 'tr' %}">
+                    TR
+                </a>
+                <a class="menu-web-language {% if language == 'de' %}active{% endif %}" href="{% url 'menu_web' 'de' %}">
+                    DE
+                </a>
+                <a class="menu-web-language {% if language == 'en' %}active{% endif %}" href="{% url 'menu_web' 'en' %}">
+                    EN
+                </a>
+            </div>
+        </div>
+        <div class="categories">
+            <div class="category-wrapper">
+                <a onclick="categoryChanger(this)"
+                   hx-post="{% url 'category_change_web' language=language category=0 %}"
+                   class="category active" hx-target="#products" hx-swap="outerHTML"
+                   id="all-categories">{{ all_categories_title }}</a></div>
+            {% for category in categories %}
+                <div class="category-wrapper">
+                    <a onclick="categoryChanger(this)"
+                       hx-get="{% url 'category_change_web' language=language category=category.id %}"
+                       hx-target="#products" hx-swap="outerHTML" class="category" id="{{ category.name_id }}">
+                        <p>{{ category.name }}</p></a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'htmx_partials/products_web.html' %}
+{% endblock %}

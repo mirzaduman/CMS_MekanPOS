@@ -1,0 +1,33 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="menu-navbar">
+        <div class="top-bar">
+            <a href="{% url 'home' language=language table_hash=table_hash %}" class="left-arrow"><img
+                    src="{% static 'img/menu/left-arrow.svg' %}" alt="back"></a>
+            <p class="menu-topic">{{ menu_topic }}</p>
+            <a href="{% url 'basket' language=language table_hash=table_hash %}" class="basket-icon">
+                <img src="{% static 'img/menu/basket-icon.svg' %}" alt="">
+                {% if in_basket %}
+                    <div class="in-basket"></div>
+                {% endif %}
+            </a>
+        </div>
+        <div class="categories">
+            <div class="category-wrapper">
+                <a onclick="categoryChanger(this)"
+                   hx-post="{% url 'category_change' language=language table_hash=table_hash category=0 %}"
+                   class="category active" hx-target="#products" hx-swap="outerHTML"
+                   id="all-categories">{{ all_categories }}</a></div>
+            {% for category in categories %}
+                <div class="category-wrapper">
+                    <a onclick="categoryChanger(this)"
+                       hx-get="{% url 'category_change' language=language table_hash=table_hash category=category.id %}"
+                       hx-target="#products" hx-swap="outerHTML" class="category" id="{{ category.name_id }}">
+                        <p>{{ category.name }}</p></a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'htmx_partials/products.html' %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% load static %}
+<div class="basket-order" id="order_{{ order.id }}">
+    {% include 'htmx_partials/delete_order_modal.html' %}
+    <a class="left" href="{% url 'edit_order' language=language table_hash=table_hash order_id=order.id %}">
+        <p class="basket-order-product-name">
+            {{ order.name }}
+        </p>
+        {% if order.extras %}
+            <p class="basket-order-extras">
+                {% for extra in order.extras %}
+                    {% if language == 'de' %}
+                        {{ extra.name_de }}
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        {{ extra.name_tr }}
+                    {% endif %}
+                    {% if language == 'en' %}
+                        {{ extra.name_en }}
+                    {% endif %}
+                    {% if forloop.last %}
+
+                    {% else %}
+                        ,
+                    {% endif %}
+                {% endfor %}
+            </p>
+        {% endif %}
+    </a>
+    <div class="right">
+        <p class="order-price">{{ order.price }} €</p>
+        <div class="basket-order-amount">
+            <a {% if order.amount > 1 %}
+                hx-post="{% url 'decrease_order_amount' language=language table_hash=table_hash order_id=order.id %}"
+                hx-target="#order_{{ order.id }}" hx-swap="outerHTML"
+            {% else %}
+                hx-post="{% url 'delete_order_prompt' order_id=order.id language=language table_hash=table_hash %}"
+                hx-target="#delete-order-prompt-{{ order.id }}" hx-swap="outerHTML"
+            {% endif %} class="minus"><img src="{% static 'img/menu/subtract.svg' %}" alt="minus"></a>
+            <div class="amount">
+                <input type="hidden" id="basket-order-id" name="hidden-amount"
+                       value="{{ order.id }}">
+                <input type="hidden" id="basket-order-amount" name="hidden-amount"
+                       value="{{ order.amount }}">
+                <p class="shown-amount">{{ order.amount }}</p>
+            </div>
+            <a hx-post="{% url 'increase_order_amount' language=language table_hash=table_hash order_id=order.id %}"
+                                        hx-target="#order_{{ order.id }}" hx-swap="outerHTML" class="plus"><img src="{% static 'img/menu/add.svg' %}" alt="plus"></a>
+        </div>
+    </div>
+</div>
+
+<p hx-swap-oob="true" class="end-price" id="end-price"><span class="price-value">{{ total }}</span> €</p>

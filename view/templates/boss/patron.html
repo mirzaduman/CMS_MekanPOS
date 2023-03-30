@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="patron">
+        <form method="POST" hx-post="{% url 'patron_data' %}" hx-target="#patron-data" hx-swap="outerHTML"
+              class="patron-form">
+            <p>Tarih</p>
+            <input type="date" name="date" class="patron-date">
+            <p>Şifre</p>
+            <input type="password" pattern="[0-9]*" name="password" class="patron-password">
+            <p>Masalar</p>
+            <div class="tables-range">
+                <input type="text" name="table-range-start">
+                <p>-</p>
+                <input type="text" name="table-range-end">
+            </div>
+            <button type="submit" class="patron-submit">Sorgula</button>
+        </form>
+        <div class="patron-data" id="patron-data">
+
+        </div>
+    </div>
+{% endblock %}

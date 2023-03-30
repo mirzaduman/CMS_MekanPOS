@@ -1,0 +1,347 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <form action="{% url 'add_order_to_basket' language=language table_hash=table_hash product_id=product.id %}"
+          method="post" class="product-form">
+        {% csrf_token %}
+        <div class="product-order">
+            <div class="product-top-bar">
+                <a href="{% url 'menu' language=language table_hash=table_hash %}" class="close"><img
+                        src="{% static 'img/menu/close.svg' %}" alt="close"></a>
+                <a href="{% url 'basket' language=language table_hash=table_hash %}" class="basket-icon">
+                    <img src="{% static 'img/menu/basket-icon.svg' %}" alt="">
+                    {% if in_basket %}
+                        <div class="in-basket"></div>
+                    {% endif %}
+                </a>
+            </div>
+            {% if product.picture %}
+                <img class="product-order-picture" src="{{ product.picture.url }}" alt="{{ product.name_de }}">
+            {% endif %}
+            <div class="product-order-info">
+                <p class="product-order-name">
+                    {% if product.product_nr %}<span class="product-order-nr">{{ product.product_nr }}.</span>{% endif %}
+                    {% if language == 'de' %}
+                        {{ product.name_de }}
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        {{ product.name_tr }}
+                    {% endif %}
+                    {% if language == 'en' %}
+                        {{ product.name_en }}
+                    {% endif %}
+                </p>
+                {% if product.content_disclaimer.all.exists %}
+                    <div class="content-disclaimers">
+                        {% for content_dislcaimer in product.content_disclaimer.all %}
+                            {% if content_dislcaimer.name_de == 'Vegetarisch' %}
+                                {% if language == 'de' %}
+                                    <p class="veggy">vegetarisch</p>
+                                {% endif %}
+                                {% if language == 'tr' %}
+                                    <p class="veggy">vejetaryen</p>
+                                {% endif %}
+                                {% if language == 'en' %}
+                                    <p class="veggy">vegetarian</p>
+                                {% endif %}
+                            {% endif %}
+                            {% if content_dislcaimer.name_de == 'Vegan' %}
+                                {% if language == 'de' %}
+                                    <p class="veggy">vegan</p>
+                                {% endif %}
+                                {% if language == 'tr' %}
+                                    <p class="veggy">vegan</p>
+                                {% endif %}
+                                {% if language == 'en' %}
+                                    <p class="veggy">vegan</p>
+                                {% endif %}
+                            {% endif %}
+                            {% if content_dislcaimer.name_de == 'Scharf' %}
+                                <img src="{% static 'img/menu/pepper.svg' %}" class="spicy" alt="spicy">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if product.description_de %}
+                    <p class="product-description">
+                        {% if language == 'de' %}
+                            {{ product.description_de }}
+                        {% endif %}
+                        {% if language == 'tr' %}
+                            {{ product.description_tr }}
+                        {% endif %}
+                        {% if language == 'en' %}
+                            {{ product.description_en }}
+                        {% endif %}
+                    </p>
+                {% endif %}
+                {% if product.id != 178 %}
+                <p class="product-price">
+                    {{ product.price }} €
+                </p>
+                {% endif %}
+                <div class="product-order-amount">
+                    <a class="minus"><img src="{% static 'img/menu/subtract.svg' %}" alt="minus"></a>
+                    <div class="amount">
+                        <input type="hidden" class="hidden-amount" name="hidden-amount" value="1">
+                        <p class="shown-amount">1</p>
+                    </div>
+                    <a class="plus"><img src="{% static 'img/menu/add.svg' %}" alt="plus"></a>
+                </div>
+            </div>
+        </div>
+        {% if in_basket_amount > 0 %}
+            <div class="order-in-basket">
+                <div class="details">
+                    <p class="in-basket-amount">
+                        {{ in_basket_amount }}x
+                    </p>
+                    <p class="oib-name">
+                        {% if language == 'de' %}
+                            {{ product.name_de }}
+                        {% endif %}
+                        {% if language == 'tr' %}
+                            {{ product.name_tr }}
+                        {% endif %}
+                        {% if language == 'en' %}
+                            {{ product.name_en }}
+                        {% endif %}
+                    </p>
+                </div>
+                {% if language == 'de' %}
+                    <a href="{% url 'basket' language=language table_hash=table_hash %}" class="in-basket-button">im
+                        Warenkorb bearbeiten</a>
+                {% endif %}
+                {% if language == 'tr' %}
+                    <a href="{% url 'basket' language=language table_hash=table_hash %}" class="in-basket-button">Sepette
+                        düzenle</a>
+                {% endif %}
+                {% if language == 'en' %}
+                    <a href="{% url 'basket' language=language table_hash=table_hash %}" class="in-basket-button">Edit
+                        in Basket</a>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if product.extras.all.exists %}
+            <div class="extras">
+                <p class="title">
+                    {% if language == 'de' %}
+                        Extras
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Ekstralar
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Extras
+                    {% endif %}
+                </p>
+                {% for extra in product.extras.all %}
+                    <div class="extra">
+                        <div class="left">
+                            <p class="extra-name">
+                                {% if language == 'de' %}
+                                    {{ extra.name_de }}
+                                {% endif %}
+                                {% if language == 'tr' %}
+                                    {{ extra.name_tr }}
+                                {% endif %}
+                                {% if language == 'en' %}
+                                    {{ extra.name_en }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="right">
+                            <p class="extra-price"><span class="extra-price-value">{{ extra.price }}</span> €</p>
+                            <div class="extra-checkbox">
+                                <img src="{% static 'img/menu/unchecked.svg' %}" alt="unchecked"
+                                     class="unchecked active">
+                                <img src="{% static 'img/menu/checked.svg' %}" alt="checked" class="checked">
+                                <input type="checkbox" class="checkbox-input" name="extras" value="{{ extra.id }}">
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if product.good_with.all.exists %}
+            <div class="extras">
+                <p class="title">
+                    {% if language == 'de' %}
+                        Passend dazu
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Yanında iyi gider
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Good with
+                    {% endif %}
+                </p>
+                {% for good_with in product.good_with.all %}
+                    {% if good_with.status.name == 'Aktiv' %}
+                        <div class="extra">
+                            <div class="left">
+                                <p class="extra-name">
+                                    {% if language == 'de' %}
+                                        {{ good_with.name_de }}
+                                    {% endif %}
+                                    {% if language == 'tr' %}
+                                        {{ good_with.name_tr }}
+                                    {% endif %}
+                                    {% if language == 'en' %}
+                                        {{ good_with.name_en }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="right">
+                                <p class="extra-price"><span class="extra-price-value">{{ good_with.price }}</span> €
+                                </p>
+                                <div class="extra-checkbox">
+                                    <img src="{% static 'img/menu/unchecked.svg' %}" alt="unchecked"
+                                         class="unchecked active">
+                                    <img src="{% static 'img/menu/checked.svg' %}" alt="checked" class="checked">
+                                    <input type="checkbox" class="checkbox-input" name="good_withs"
+                                           value="{{ good_with.id }}">
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="additional-information">
+            <p>
+                {% if language == 'de' %}
+                    Zusätzliche Information
+                {% endif %}
+                {% if language == 'tr' %}
+                    Ek bilgi
+                {% endif %}
+                {% if language == 'en' %}
+                    Additional Information
+                {% endif %}
+            </p>
+            <textarea name="additional-info-text-field" class="text-field"></textarea>
+        </div>
+        {% if status != 'alpha' %}
+        <div class="product-order-gang">
+            <p class="title">
+                {% if language == 'de' %}
+                    Gang
+                {% endif %}
+                {% if language == 'tr' %}
+                    Öncelik
+                {% endif %}
+                {% if language == 'en' %}
+                    Priority
+                {% endif %}
+            </p>
+            <div class="gang-line">
+                <input type="radio" class="gang-radio" name="gang-radio" value="1" checked="checked"
+                       onclick="gangToggle(this)">
+                <p class="gang-name active">
+                    {% if language == 'de' %}
+                        1. Gang
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        1. Sıra
+                    {% endif %}
+                    {% if language == 'en' %}
+                        1. Order
+                    {% endif %}
+                </p>
+            </div>
+            <div class="gang-line">
+                <input type="radio" class="gang-radio" name="gang-radio" value="2" onclick="gangToggle(this)">
+                <p class="gang-name">
+                    {% if language == 'de' %}
+                        2. Gang
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        2. Sıra
+                    {% endif %}
+                    {% if language == 'en' %}
+                        2. Order
+                    {% endif %}
+                </p>
+            </div>
+            <div class="gang-line">
+                <input type="radio" class="gang-radio" name="gang-radio" value="3" onclick="gangToggle(this)">
+                <p class="gang-name">
+                    {% if language == 'de' %}
+                        3. Gang
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        3. Sıra
+                    {% endif %}
+                    {% if language == 'en' %}
+                        3. Order
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% endif %}
+        {% if product.allergens.all.exists %}
+            <div class="product-order-allergens">
+                <p class="title">
+                    {% if language == 'de' %}
+                        Allergene
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Alerjenler
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Allergens
+                    {% endif %}
+                </p>
+                <div class="allergen-list">
+                    {% for allergen in product.allergens.all %}
+                        <p class="allergen">
+                            {% if language == 'de' %}
+                                {{ allergen.code }} - {{ allergen.name_de }}
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                {{ allergen.code }} - {{ allergen.name_tr }}
+                            {% endif %}
+                            {% if language == 'en' %}
+                                {{ allergen.code }} - {{ allergen.name_en }}
+                            {% endif %}
+                            {% if forloop.last %}
+
+                            {% else %}
+                                ,
+                            {% endif %}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        <div class="product-order-end">
+            <div class="product-order-sum">
+                <p class="price-title">
+                    {% if language == 'de' %}
+                        Preis
+                    {% endif %}
+                    {% if language == 'tr' %}
+                        Fiyat
+                    {% endif %}
+                    {% if language == 'en' %}
+                        Price
+                    {% endif %}
+                </p>
+                <p class="end-price" id="end-price"><span class="price-value">{{ product.price }}</span> €</p>
+            </div>
+            <button type="submit" class="product-order-submit">
+                {% if language == 'de' %}
+                    Hinzufügen
+                {% endif %}
+                {% if language == 'tr' %}
+                    Sepete Ekle
+                {% endif %}
+                {% if language == 'en' %}
+                    Add to basket
+                {% endif %}
+            </button>
+        </div>
+    </form>
+    <div class="product-order-fixed"></div>
+{% endblock %}

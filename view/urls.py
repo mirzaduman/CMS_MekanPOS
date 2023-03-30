@@ -1,0 +1,48 @@
+from django.urls import path
+from .views import home, call_waiter, menu, category_change, product, add_order_to_basket, basket, \
+    decrease_order_amount, delete_order_prompt, delete_order, increase_order_amount, send_basket, edit_order, \
+    basket_poll, my_orders, finished_order_details, kitchen, kitchen_cooked, patron, patron_data, menu_web, \
+    category_change_web, choose_table
+
+urlpatterns = [
+    path('home/<str:language>/<str:table_hash>', home, name='home'),
+    path('call_waiter/<str:language>/<str:table_hash>', call_waiter, name='call_waiter'),
+    path('menu/<str:language>/<str:table_hash>', menu, name='menu'),
+    path('category_change/<str:language>/<str:table_hash>/<int:category>', category_change, name='category_change'),
+    path('product/<str:language>/<str:table_hash>/<int:product_id>', product, name='product'),
+    path('add-order-to-basket/<str:language>/<str:table_hash>/<int:product_id>', add_order_to_basket,
+         name='add_order_to_basket'),
+    path('basket/<str:language>/<str:table_hash>', basket, name='basket'),
+    path('basket_poll/<str:language>/<str:table_hash>', basket_poll, name='basket_poll'),
+    path('decrease_order_amount/<str:language>/<str:table_hash>/<int:order_id>/', decrease_order_amount,
+         name='decrease_order_amount'),
+    path('delete_order_prompt/<str:language>/<str:table_hash>/<int:order_id>/', delete_order_prompt,
+         name='delete_order_prompt'),
+    path('delete_order/<str:language>/<str:table_hash>/<int:order_id>/', delete_order, name='delete_order'),
+    path('increase_order_amount/<str:language>/<str:table_hash>/<int:order_id>/', increase_order_amount,
+         name='increase_order_amount'),
+    path('send_basket/<str:language>/<str:table_hash>/<int:basket_id>', send_basket,
+         name='send_basket'),
+    path('edit_order/<str:language>/<str:table_hash>/<int:order_id>/', edit_order,
+         name='edit_order'),
+    path('my_orders/<str:language>/<str:table_hash>/', my_orders,
+         name='my_orders'),
+    path('finished_order_details/<str:language>/<str:table_hash>/<int:order_id>/', finished_order_details,
+         name='finished_order_details'),
+    path('kitchen', kitchen,
+         name='kitchen'),
+    # path('kitchen_prompt/<int:b>', kitchen_prompt,
+    #      name='kitchen_prompt'),
+    path('kitchen_cooked/<int:b>', kitchen_cooked,
+         name='kitchen_cooked'),
+    path('patron', patron,
+         name='patron'),
+    path('patron_data', patron_data,
+         name='patron_data'),
+    path('menu_web/<str:language>', menu_web,
+         name='menu_web'),
+    path('category_change_web/<str:language>/<int:category>', category_change_web,
+         name='category_change_web'),
+    path('choose_table/<str:waiter>', choose_table,
+         name='choose_table'),
+]

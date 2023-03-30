@@ -1,0 +1,93 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="my-orders">
+        <div class="top-bar">
+            <a href="{% url 'home' language=language table_hash=table_hash %}" class="left-arrow">
+                <img src="{% static 'img/menu/left-arrow.svg' %}" alt="back">
+            </a>
+            <p class="menu-topic">
+                {% if language == 'de' %}
+                    Meine Bestellungen
+                {% endif %}
+                {% if language == 'tr' %}
+                    Siparişlerim
+                {% endif %}
+                {% if language == 'en' %}
+                    My Orders
+                {% endif %}
+            </p>
+        </div>
+        <div class="my-baskets">
+            {% for basket in baskets %}
+                <div class="my-basket">
+                    <div class="order-time">
+                        <p class="time-name">
+                            {% if language == 'de' %}
+                                Bestellzeitpunkt
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                Sipariş Saati
+                            {% endif %}
+                            {% if language == 'en' %}
+                                Order Time
+                            {% endif %}
+                        </p>
+                        <p class="time-amount">{{ basket.finished_time|time:"G:i" }}</p>
+                    </div>
+                    <div class="orders-of-basket">
+                        {% for order in basket.orders.all %}
+                            <a class="order-of-basket" href="{% url 'finished_order_details' language=language table_hash=table_hash order_id=order.id %}">
+                                <p class="product-name">
+                                    {% if language == 'de' %}
+                                        {{ order.product.name_de }}
+                                    {% endif %}
+                                    {% if language == 'tr' %}
+                                        {{ order.product.name_tr }}
+                                    {% endif %}
+                                    {% if language == 'en' %}
+                                        {{ order.product.name_en }}
+                                    {% endif %}
+                                </p>
+                                <p class="price">{{ order.price }} €</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if forloop.last %}
+                    <a href="{% url 'menu' language=language table_hash=table_hash %}" class="add-order">
+                        <img src="{% static 'img/home/add-white.svg' %}" alt="add">
+                        <p>
+                            {% if language == 'de' %}
+                                Bestellung hinzufügen
+                            {% endif %}
+                            {% if language == 'tr' %}
+                                Sipariş ekle
+                            {% endif %}
+                            {% if language == 'en' %}
+                                Add order
+                            {% endif %}
+                        </p>
+                    </a>
+                    <div class="line"></div>
+                {% else %}
+                    <div class="line"></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="orders-total">
+            <p class="total-name">
+                {% if language == 'de' %}
+                    Summe
+                {% endif %}
+                {% if language == 'tr' %}
+                    Toplam
+                {% endif %}
+                {% if language == 'en' %}
+                    Sum
+                {% endif %}
+            </p>
+            <p class="total-amount">{{ sum }} €</p>
+        </div>
+    </div>
+{% endblock %}

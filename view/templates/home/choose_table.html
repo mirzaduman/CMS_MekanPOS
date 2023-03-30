@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <form class="choose-table" method="post">
+        {% csrf_token %}
+        <img class="logo" src="{% static 'img/home/mekan_logo.png' %}" alt="logo">
+        <div class="ct-action">
+            <div class="tischnummer">
+                <p>Tischnummer</p>
+                <input type="text" name="table-nr" {% if e %}class="e-class"{% endif %}>
+            </div>
+            <button type="submit">Weiter</button>
+        </div>
+        {% if e %}
+            <p class="e-text">Kein Tisch mit dieser Nummer verfügbar</p>
+        {% endif %}
+        <div class="reble">
+            <p class="made">Made by</p>
+            <p class="gilroy">reble studio</p>
+        </div>
+    </form>
+{% endblock %}

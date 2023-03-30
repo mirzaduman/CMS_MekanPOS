@@ -1,0 +1,18 @@
+<div class="delete-order-prompt active" id="delete-order-prompt-{{ o }}">
+    <div class="content">
+        <a onclick="closeModal(this)" class="prompt-close"><img
+                src="{% static 'img/menu/close.svg' %}" alt="close"></a>
+        <p class="prompt-text">
+            Masa: {{ b.session.table }} Siparişler hazır mı?
+        </p>
+        <div class="prompt-actions">
+            <a onclick="closeModal(this)" class="prompt-no">
+                Hayır
+            </a>
+            <a href="{% url 'kitchen_cooked' order_id=order.id %}"
+               class="prompt-yes">
+                Evet
+            </a>
+        </div>
+    </div>
+</div>
