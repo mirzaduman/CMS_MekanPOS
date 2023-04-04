@@ -28,7 +28,6 @@ class TableStatus(models.Model):
 
 class Table(models.Model):
     area = models.ForeignKey(Area, on_delete=models.SET_NULL, null=True)
-    nr = models.CharField(max_length=20)
     new_nr = models.IntegerField(null=True, blank=True)
     status = models.ForeignKey(TableStatus, on_delete=models.SET_NULL, null=True)
     status_change = models.DateTimeField(blank=True, null=True)
