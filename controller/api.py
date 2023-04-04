@@ -634,6 +634,7 @@ def send_basket(request, data: SendBasket = Form(...)):
         basket.approved_by = user
         basket.save()
         table.status = get_object_or_404(TableStatus, name='Bestellung')
+        table.status_change = datetime.datetime.now(pytz.timezone('Europe/Berlin'))
         table.save()
         return 200
     else:

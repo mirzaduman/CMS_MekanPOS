@@ -57,7 +57,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mekanpos.wsgi.application'
 
 DATABASES = {
-    'second': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('MAIN_DB_NAME'),
         'USER': os.getenv('MAIN_DB_USER'),
@@ -65,7 +65,7 @@ DATABASES = {
         'HOST': os.getenv('MAIN_DB_HOST'),
         'PORT': os.getenv('MAIN_DB_PORT')
     },
-    'default': {
+    'second': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
