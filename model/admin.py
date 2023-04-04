@@ -26,7 +26,7 @@ class AreaAdmin(admin.ModelAdmin):
 
 @admin.register(Table)
 class TableAdmin(admin.ModelAdmin):
-    list_display = ('id', 'area', 'nr', 'waiter', 'status')
+    list_display = ('id', 'area', 'waiter', 'status')
 
 
 @admin.register(TableStatus)
