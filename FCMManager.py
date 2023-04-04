@@ -1,20 +1,18 @@
 # import firebase_admin
+import json
 import os
 from firebase_admin import credentials, messaging, initialize_app
 
-cred = credentials.Certificate(os.path.expanduser('~/PycharmProjects/mekanpos/serviceAccountKey.json'))
+cred = credentials.Certificate(os.path.expanduser('~/mekanpos_project/serviceAccountKey.json'))
 initialize_app(cred)
 
 
-def send_to_token(token: str, title: str, body: str):
+def send_to_token(token: str, data: dict):
     registration_token = token
-
+    data_json = json.dumps(data)
     message = messaging.Message(
-        notification=messaging.Notification(
-            title=title,
-            body=body,
-        ),
-        token=registration_token,
+        data=data_json,
+        token=registration_token
     )
 
     messaging.send(message)

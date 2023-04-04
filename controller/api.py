@@ -866,13 +866,16 @@ def change_session_table(request, data: ChangeSessionTable = Form(...)):
         user = get_object_or_404(User, id=data.user_id)
         if user.is_manager:
             session = get_object_or_404(Session, id=data.session_id)
-            session.table.status = get_object_or_404(TableStatus, name='Inaktiv')
+            old_table = session.table
+            old_table.status = get_object_or_404(TableStatus, name='Inaktiv')
+            old_table.status_change = datetime.datetime.now()
             new_table = get_object_or_404(Table, id=data.table_id)
-            session.table = get_object_or_404(Table, id=data.table_id)
+            session.table = new_table
             new_table.status = get_object_or_404(TableStatus, name='Bestellung')
             new_table.status_change = datetime.datetime.now()
             new_table.save()
             session.save()
+            old_table.save()
             return 200
         else:
             return 'user_is_not_manager'
@@ -904,8 +907,10 @@ def change_order_table(request, data: ChangeOrderTable = Form(...)):
             order = get_object_or_404(Order, id=data.order_id)
             basket = Basket.objects.filter(orders=order)[0]
             table = get_object_or_404(Table, id=data.table_id)
+            old_table = None
             if Session.objects.filter(table=table, end__isnull=True).exists():
                 session = Session.objects.filter(table=table, end__isnull=True).last()
+                old_table = session.table
             else:
                 session = Session.objects.create(table=table, start=datetime.datetime.now(
                     pytz.timezone('Europe/Berlin')), session_nr=session_nr_generator())
@@ -915,6 +920,12 @@ def change_order_table(request, data: ChangeOrderTable = Form(...)):
                 aim_basket = Basket.objects.create(session=session, approved=True, approved_by=user)
             aim_basket.orders.add(order)
             basket.orders.remove(order)
+            if old_table:
+                session.end = datetime.datetime.now(pytz.timezone('Europe/Berlin'))
+                old_table.status = get_object_or_404(TableStatus, name='Inaktiv')
+                old_table.status_change = datetime.datetime.now(pytz.timezone('Europe/Berlin'))
+                session.save()
+                old_table.save()
             return 200
         else:
             return 'user_is_not_manager'
@@ -1605,7 +1616,12 @@ def finish_basket(request, data: FinishBasket = Form(...)):
             pytz.timezone('Europe/Berlin'))
         basket.save()
         table = basket.session.table
-        send_to_token(get_object_or_404(Device, user=table.waiter).token, f"Masa {table.nr}", "Yemekler hazır!")
+        notification_data = {
+            'title': 'Bestellung fertig!',
+            'body': f'Das Essen für Tisch {table.nr} ist abholbereit.',
+            'basket': f'{basket.id}'
+        }
+        send_to_token(get_object_or_404(Device, user=table.waiter).token, notification_data)
         return 200
     else:
         return 401
