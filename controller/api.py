@@ -104,14 +104,14 @@ def get_tables(request, query: GetTables = Query(...)):
         response = []
         user = get_object_or_404(User, id=query.user_id)
         if user.is_waiter:
-            for table in Table.objects.filter(waiter=user).order_by('status_change'):
+            for table in Table.objects.filter(waiter=user).order_by('nr'):
                 table_details = {'id': table.id, 'table_nr': table.nr, 'status': table.status.name,
                                  'status_border_color': table.status.border_color,
                                  'status_fill_color': table.status.border_color,
                                  'last_action_time': table.status_change}
                 response.append(table_details)
         if user.is_waiter_chef or user.is_manager:
-            for table in Table.objects.all():
+            for table in Table.objects.all().order_by('nr'):
                 def get_user():
                     if table.waiter:
                         return table.waiter.first_name
