@@ -67,6 +67,7 @@ class Product(models.Model):
     name_tr = models.CharField(max_length=200)
     name_en = models.CharField(max_length=200)
     product_nr = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    new_product_nr = models.CharField(unique=True, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     picture = models.ImageField(upload_to='product_pictures/', blank=True, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
