@@ -62,7 +62,7 @@ class ContentDisclaimerAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product_nr', 'name_de', 'price', 'status')
+    list_display = ('id', 'new_product_nr', 'name_de', 'price', 'status')
     search_fields = ('product_nr', 'name_de')
 
 
