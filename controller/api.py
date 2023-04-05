@@ -76,7 +76,7 @@ def create_device(request, data: CreateDevice = Form(...)):
 def login(request, data: Login = Form(...)):
     if data.key == auth_key:
         user = get_object_or_404(User, username=data.username)
-        device = get_object_or_404(Device, token=data.token)
+        device, created = Device.objects.get_or_create(token=data.token)
         if user.check_password(data.password):
             if user.is_waiter:
                 role = 'waiter'
@@ -204,7 +204,7 @@ def get_products(request, query: GetProducts = Query(...)):
         table = get_object_or_404(Table, id=query.table_id)
         session = Session.objects.filter(table=table).last()
         products = []
-        for product in Product.objects.all():
+        for product in Product.objects.all().order_by('product_nr'):
             status = None
             status_description = None
             if product.status:
