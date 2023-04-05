@@ -279,7 +279,8 @@ def get_product(request, query: GetProduct = Query(...)):
         for content_disclaimer in product.content_disclaimer.all():
             content_disclaimers.append(content_disclaimer.name_de)
         response.update(
-            {'name': product.name_de, 'picture_url': get_picture_url(product), 'description': product.description_de,
+            {'name': product.name_de, 'product_nr': product.product_nr, 'picture_url': get_picture_url(product),
+             'description': product.description_de,
              'price': product.price,
              'available_extras': extras, 'good_with': good_withs, 'allergens': allergens,
              'content_disclaimers': content_disclaimers, 'status': product.status.name})
