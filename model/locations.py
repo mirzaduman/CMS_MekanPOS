@@ -38,6 +38,6 @@ class Table(models.Model):
         verbose_name_plural = 'Tables'
 
     def __str__(self):
-        return self.nr
+        return str(self.nr)
 
 
