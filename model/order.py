@@ -13,8 +13,8 @@ class Session(models.Model):
     class Meta:
         verbose_name_plural = 'Sessions'
 
-    def __str__(self):
-        return str(self.session_nr)
+    # def __str__(self):
+    #     return str(self.session_nr)
 
 
 class Order(models.Model):
