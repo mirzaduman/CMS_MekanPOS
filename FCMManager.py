@@ -9,9 +9,9 @@ initialize_app(cred)
 
 def send_to_token(token: str, data: dict):
     registration_token = token
-    data_json = json.dumps(data)
+    # data_json = json.dumps(data)
     message = messaging.Message(
-        data=data_json,
+        data=data,
         token=registration_token
     )
 
