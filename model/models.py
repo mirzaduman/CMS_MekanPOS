@@ -18,5 +18,5 @@ class Notification(models.Model):
     log = models.TextField(blank=True, null=True)
     action_made = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
-    assigned_basket = models.ForeignKey('model.Basket', on_delete=models.SET_NULL, null=True)
+    assigned_basket = models.ForeignKey('model.Basket', on_delete=models.SET_NULL, null=True, blank=True)
 
