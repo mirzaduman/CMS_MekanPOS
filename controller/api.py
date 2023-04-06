@@ -162,20 +162,20 @@ def get_table(request, query: GetTable = Query(...)):
                     if sessions:
                         session = Session.objects.filter(table=table, end__isnull=True).last()
                     else:
-                        session = Session.objects.create(table=table, start=datetime.datetime.now(
-                            pytz.timezone('Europe/Berlin')), session_nr=session_nr_generator())
+                        session = Session.objects.create(table=table, start=timezone.now(),
+                                                         session_nr=session_nr_generator())
                 else:
                     if Session.objects.filter(table=table, end__isnull=True).exists():
                         session = Session.objects.filter(table=table, end__isnull=True).last()
-                        time_since = datetime.datetime.now() - session.start
+                        time_since = timezone.now() - session.start
                         if time_since > datetime.timedelta(minutes=15):
                             session.delete()
-                            session = Session.objects.create(table=table, start=datetime.datetime.now(
-                                pytz.timezone('Europe/Berlin')), session_nr=session_nr_generator())
+                            session = Session.objects.create(table=table, start=timezone.now(),
+                                                             session_nr=session_nr_generator())
                             session.save()
                     else:
-                        session = Session.objects.create(table=table, start=datetime.datetime.now(
-                            pytz.timezone('Europe/Berlin')), session_nr=session_nr_generator())
+                        session = Session.objects.create(table=table, start=timezone.now(),
+                                                         session_nr=session_nr_generator())
                 if user.is_manager:
                     response['session_id'] = session.id
                 baskets_list = []
