@@ -1562,7 +1562,7 @@ def get_baskets(request, query: GetBaskets = Query(...)):
                                        'amount': amount, 'extras': extras})
             cooked_baskets.append(
                 {'id': basket.id, 'table_nr': basket.session.table.nr,
-                 'timestamp': round(basket.finished_time.timestamp()),
+                 'timestamp': round(basket.finished_time.astimezone().timestamp()),
                  'orders': orders})
         baskets_response = []
         response = {'active_baskets': baskets_response, 'cooked_baskets': cooked_baskets}
