@@ -185,7 +185,7 @@ def get_table(request, query: GetTable = Query(...)):
                         order_details = {'id': order.id, 'product': order.product.name_de, 'price': order.price}
                         orders_list.append(order_details)
                         subtotal += order.price
-                    basket_details = {'basket_id': basket.id, 'order_time': round(basket.finished_time.timestamp()),
+                    basket_details = {'basket_id': basket.id, 'order_time': basket.finished_time.strftime('%H:%M'),
                                       'orders': orders_list}
                     baskets_list.append(basket_details)
                 response['baskets'] = baskets_list
