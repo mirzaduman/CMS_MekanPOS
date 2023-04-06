@@ -658,7 +658,7 @@ def get_notifications(request, query: GetNotifications = Query(...)):
                     return None
 
             notification_details = {'id': notification.id, 'log': notification.log,
-                                    'time': notification.astimezone().timestamp.time().strftime('%H:%M'),
+                                    'time': notification.timestamp.astimezone().time().strftime('%H:%M'),
                                     'action_made': notification.action_made, 'basket_id': get_basket_id()}
             response.append(notification_details)
         return response
