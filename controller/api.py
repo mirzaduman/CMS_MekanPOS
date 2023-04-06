@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponse
+from django.utils import timezone
 
 from ninja import NinjaAPI, Form, File, Query
 from ninja.files import UploadedFile
@@ -449,13 +450,11 @@ def add_order_to_basket(request, data: AddOrder = Form(...)):
                 else:
                     basket = Basket.objects.create(session=session)
             else:
-                session = Session.objects.create(table=table, start=datetime.datetime.now(
-                    pytz.timezone('Europe/Berlin')),
+                session = Session.objects.create(table=table, start=timezone.now(),
                                                  session_nr=session_nr_generator())
                 basket = Basket.objects.create(session=session)
         else:
-            session = Session.objects.create(table=table, start=datetime.datetime.now(
-                pytz.timezone('Europe/Berlin')),
+            session = Session.objects.create(table=table, start=timezone.now(),
                                              session_nr=session_nr_generator())
             basket = Basket.objects.create(session=session)
         if data.good_withs:
