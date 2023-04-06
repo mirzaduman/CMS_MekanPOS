@@ -628,14 +628,13 @@ def send_basket(request, data: SendBasket = Form(...)):
         session = Session.objects.filter(table=table, end__isnull=True).last()
         basket = Basket.objects.filter(session=session, finished=False).last()
         basket.finished = True
-        basket.finished_time = datetime.datetime.now(
-            pytz.timezone('Europe/Berlin'))
+        basket.finished_time = timezone.now()
         basket.user = user
         basket.approved = True
         basket.approved_by = user
         basket.save()
         table.status = get_object_or_404(TableStatus, name='Bestellung')
-        table.status_change = datetime.datetime.now(pytz.timezone('Europe/Berlin'))
+        table.status_change = timezone.now()
         table.save()
         return 200
     else:
@@ -651,8 +650,7 @@ def get_notifications(request, query: GetNotifications = Query(...)):
     if query.key == auth_key:
         response = []
         for notification in Notification.objects.filter(user=get_object_or_404(User, id=query.user_id),
-                                                        timestamp__day=datetime.datetime.now(
-                                                            pytz.timezone('Europe/Berlin')).date().day):
+                                                        timestamp__day=timezone.now().date().day):
             def get_basket_id():
                 if notification.assigned_basket:
                     return notification.assigned_basket.id
@@ -660,7 +658,7 @@ def get_notifications(request, query: GetNotifications = Query(...)):
                     return None
 
             notification_details = {'id': notification.id, 'log': notification.log,
-                                    'time': notification.timestamp.time().strftime('%H:%M'),
+                                    'time': notification.astimezone().timestamp.time().strftime('%H:%M'),
                                     'action_made': notification.action_made, 'basket_id': get_basket_id()}
             response.append(notification_details)
         return response
@@ -696,7 +694,7 @@ def get_basket_approve(request, query: GetApproveBasket = Query(...)):
                     'status_border_color': basket.session.table.status.border_color,
                     'status_fill_color': basket.session.table.status.fill_color,
                     'status_change': basket.session.table.status_change.timestamp(),
-                    'order_time': basket.created_time.strftime("%H:%M"), 'orders': orders, 'total': total}
+                    'order_time': basket.created_time.astimezone().strftime("%H:%M"), 'orders': orders, 'total': total}
         return response
     else:
         return 401
@@ -870,11 +868,11 @@ def change_session_table(request, data: ChangeSessionTable = Form(...)):
             session = get_object_or_404(Session, id=data.session_id)
             old_table = session.table
             old_table.status = get_object_or_404(TableStatus, name='Inaktiv')
-            old_table.status_change = datetime.datetime.now()
+            old_table.status_change = timezone.now()
             new_table = get_object_or_404(Table, id=data.table_id)
             session.table = new_table
             new_table.status = get_object_or_404(TableStatus, name='Bestellung')
-            new_table.status_change = datetime.datetime.now()
+            new_table.status_change = timezone.now()
             new_table.save()
             session.save()
             old_table.save()
@@ -914,8 +912,7 @@ def change_order_table(request, data: ChangeOrderTable = Form(...)):
                 session = Session.objects.filter(table=table, end__isnull=True).last()
                 old_table = session.table
             else:
-                session = Session.objects.create(table=table, start=datetime.datetime.now(
-                    pytz.timezone('Europe/Berlin')), session_nr=session_nr_generator())
+                session = Session.objects.create(table=table, start=timezone.now(), session_nr=session_nr_generator())
             if Basket.objects.filter(session=session, finished=False).exists():
                 aim_basket = Basket.objects.filter(session=session, finished=False).last()
             else:
@@ -923,9 +920,9 @@ def change_order_table(request, data: ChangeOrderTable = Form(...)):
             aim_basket.orders.add(order)
             basket.orders.remove(order)
             if old_table:
-                session.end = datetime.datetime.now(pytz.timezone('Europe/Berlin'))
+                session.end = timezone.now()
                 old_table.status = get_object_or_404(TableStatus, name='Inaktiv')
-                old_table.status_change = datetime.datetime.now(pytz.timezone('Europe/Berlin'))
+                old_table.status_change = timezone.now()
                 session.save()
                 old_table.save()
             return 200
@@ -1505,8 +1502,7 @@ def make_payment(request, data: MakePayment = Form(...)):
             for order in basket.orders.filter(paid=False):
                 unpaid_orders += 1
         if unpaid_orders == 0:
-            session.end = datetime.datetime.now(
-                pytz.timezone('Europe/Berlin'))
+            session.end = timezone.now()
             session.table.status = TableStatus.objects.get(name='Inaktiv')
             session.table.save()
             session.save()
@@ -1519,8 +1515,7 @@ def make_payment(request, data: MakePayment = Form(...)):
 @api.get('/get-baskets', tags=['Kitchen'])
 def get_baskets(request, query: GetBaskets = Query(...)):
     if query.key == auth_key:
-        today = datetime.datetime.now(
-            pytz.timezone('Europe/Berlin')).day
+        today = timezone.now().day
         baskets = Basket.objects.filter(created_time__day=today, finished=True, finished_time__day=today, approved=True,
                                         cooked=False).order_by('finished_time')
         todays_baskets = Basket.objects.filter(created_time__day=today, finished=True, finished_time__day=today,
@@ -1610,12 +1605,10 @@ def finish_basket(request, data: FinishBasket = Form(...)):
         basket = get_object_or_404(Basket, id=data.basket_id)
         for order in basket.orders.all():
             order.cooked = True
-            order.cook_time = datetime.datetime.now(
-                pytz.timezone('Europe/Berlin'))
+            order.cook_time = timezone.now()
             order.save()
         basket.cooked = True
-        basket.cooked_time = datetime.datetime.now(
-            pytz.timezone('Europe/Berlin'))
+        basket.cooked_time = timezone.now()
         basket.save()
         table = basket.session.table
         notification_data = {
